@@ -34,7 +34,7 @@ export default createVuetify({
     },
     defaults: {
         VBtn: {
-            variant: 'tonal'
+            variant: 'elevated'
         },
         VTextField: {
             variant: 'outlined',

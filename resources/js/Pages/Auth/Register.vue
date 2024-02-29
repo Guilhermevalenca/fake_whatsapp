@@ -5,6 +5,7 @@ import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
 import { Head, Link, useForm } from '@inertiajs/vue3';
+import {ref} from "vue";
 
 const form = useForm({
     name: '',
@@ -18,6 +19,19 @@ const submit = () => {
         onFinish: () => form.reset('password', 'password_confirmation'),
     });
 };
+
+const defaultRules = [
+    value => {
+        return value ? true : 'É necessario inserir um valor a este campo';
+    },
+]
+const confirmPassword = [
+    value => {
+        return value === form.password ? true : 'Senhas diferentes';
+    }
+]
+const showPassword = ref(false);
+const showConfirmationPassword = ref(false);
 </script>
 
 <template>
@@ -26,63 +40,46 @@ const submit = () => {
 
         <form @submit.prevent="submit">
             <div>
-                <InputLabel for="name" value="Name" />
-
-                <TextInput
-                    id="name"
+                <v-text-field
+                    label="Nome"
                     type="text"
-                    class="mt-1 block w-full"
                     v-model="form.name"
-                    required
-                    autofocus
-                    autocomplete="name"
+                    :rules="defaultRules"
                 />
-
                 <InputError class="mt-2" :message="form.errors.name" />
             </div>
 
             <div class="mt-4">
-                <InputLabel for="email" value="Email" />
-
-                <TextInput
-                    id="email"
+                <v-text-field
+                    label="Email"
                     type="email"
-                    class="mt-1 block w-full"
                     v-model="form.email"
-                    required
-                    autocomplete="username"
+                    :rules="defaultRules"
                 />
-
                 <InputError class="mt-2" :message="form.errors.email" />
             </div>
 
             <div class="mt-4">
-                <InputLabel for="password" value="Password" />
-
-                <TextInput
-                    id="password"
-                    type="password"
-                    class="mt-1 block w-full"
+                <v-text-field
+                    label="Senha"
+                    :type="showPassword ? 'text' : 'password'"
                     v-model="form.password"
-                    required
-                    autocomplete="new-password"
+                    :rules="defaultRules"
+                    :append-inner-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+                    @click:append-inner="showPassword = !showPassword"
                 />
-
                 <InputError class="mt-2" :message="form.errors.password" />
             </div>
 
             <div class="mt-4">
-                <InputLabel for="password_confirmation" value="Confirm Password" />
-
-                <TextInput
-                    id="password_confirmation"
-                    type="password"
-                    class="mt-1 block w-full"
+                <v-text-field
+                    label="Confirme sua senha"
+                    :type="showConfirmationPassword ? 'text' : 'password'"
                     v-model="form.password_confirmation"
-                    required
-                    autocomplete="new-password"
+                    :rules="confirmPassword"
+                    :append-inner-icon="showConfirmationPassword ? 'mdi-eye' : 'mdi-eye-off'"
+                    @click:append-inner="showConfirmationPassword = !showConfirmationPassword"
                 />
-
                 <InputError class="mt-2" :message="form.errors.password_confirmation" />
             </div>
 
@@ -91,11 +88,11 @@ const submit = () => {
                     :href="route('login')"
                     class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                 >
-                    Already registered?
+                    Já registrado?
                 </Link>
 
                 <PrimaryButton class="ms-4" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
-                    Register
+                    Registrar
                 </PrimaryButton>
             </div>
         </form>

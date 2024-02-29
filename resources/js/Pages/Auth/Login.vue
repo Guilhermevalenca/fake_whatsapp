@@ -6,6 +6,7 @@ import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
 import { Head, Link, useForm } from '@inertiajs/vue3';
+import {ref} from "vue";
 
 defineProps({
     canResetPassword: {
@@ -27,6 +28,15 @@ const submit = () => {
         onFinish: () => form.reset('password'),
     });
 };
+const defaultRules = [
+    value => {
+        if(value) {
+            return true;
+        }
+        return 'É necessario inserir um valor a este campo'
+    },
+]
+const showPassword = ref(false);
 </script>
 
 <template>
@@ -39,40 +49,31 @@ const submit = () => {
 
         <form @submit.prevent="submit">
             <div>
-                <InputLabel for="email" value="Email" />
-
-                <TextInput
-                    id="email"
+                <v-text-field
+                    label="Email"
                     type="email"
-                    class="mt-1 block w-full"
                     v-model="form.email"
-                    required
-                    autofocus
-                    autocomplete="username"
+                    :rules="defaultRules"
                 />
-
                 <InputError class="mt-2" :message="form.errors.email" />
             </div>
 
             <div class="mt-4">
-                <InputLabel for="password" value="Password" />
-
-                <TextInput
-                    id="password"
-                    type="password"
-                    class="mt-1 block w-full"
+                <v-text-field
+                    label="Senha"
+                    :type="showPassword ? 'text' : 'password'"
                     v-model="form.password"
-                    required
-                    autocomplete="current-password"
+                    :rules="defaultRules"
+                    :append-inner-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+                    @click:append-inner="showPassword = !showPassword"
                 />
-
                 <InputError class="mt-2" :message="form.errors.password" />
             </div>
 
             <div class="block mt-4">
                 <label class="flex items-center">
                     <Checkbox name="remember" v-model:checked="form.remember" />
-                    <span class="ms-2 text-sm text-gray-600">Remember me</span>
+                    <span class="ms-2 text-sm text-gray-600">Lembre-se de mim</span>
                 </label>
             </div>
 
@@ -82,12 +83,20 @@ const submit = () => {
                     :href="route('password.request')"
                     class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                 >
-                    Forgot your password?
+                    Esqueceu sua senha?
                 </Link>
 
                 <PrimaryButton class="ms-4" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
-                    Log in
+                    Conecte-se
                 </PrimaryButton>
+            </div>
+            <div class="mt-2">
+                <Link
+                    :href="route('register')"
+                    class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                >
+                    Não está registrado?
+                </Link>
             </div>
         </form>
     </GuestLayout>

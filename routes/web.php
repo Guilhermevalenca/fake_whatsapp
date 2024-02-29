@@ -17,13 +17,16 @@ use Inertia\Inertia;
 */
 
 Route::get('/', function () {
+    if(auth()->check()) {
+        return Inertia::render('Dashboard');
+    }
     return Inertia::render('Welcome', [
         'canLogin' => Route::has('login'),
         'canRegister' => Route::has('register'),
         'laravelVersion' => Application::VERSION,
         'phpVersion' => PHP_VERSION,
     ]);
-});
+})->name('home');
 
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
@@ -36,3 +39,15 @@ Route::middleware('auth')->group(function () {
 });
 
 require __DIR__.'/auth.php';
+
+Route::get('status', function() {
+    return Inertia::render('Dashboard');
+})->name('status');
+
+Route::get('calls', function() {
+    return Inertia::render('Dashboard');
+})->name('calls');
+
+Route::get('community', function() {
+    return Inertia::render('Dashboard');
+})->name('community');

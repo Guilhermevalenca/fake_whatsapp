@@ -17,6 +17,10 @@ createInertiaApp({
     setup({ el, App, props, plugin }) {
         const app = createApp({ render: () => h(App, props) });
         loadFonts();
+        app.config.globalProperties = {
+            ...app.config.globalProperties,
+            $Echo: window.Echo,
+        };
         app.use(Vuetify);
         app.use(plugin);
         app.use(ZiggyVue);
