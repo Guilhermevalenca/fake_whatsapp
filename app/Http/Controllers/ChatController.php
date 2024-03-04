@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreChatRequest;
 use App\Http\Requests\UpdateChatRequest;
 use App\Models\Chat;
+use Inertia\Inertia;
 
 class ChatController extends Controller
 {
@@ -21,7 +22,7 @@ class ChatController extends Controller
      */
     public function create()
     {
-        //
+        return Inertia::render('Chat/CreateChat');
     }
 
     /**

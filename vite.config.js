@@ -17,4 +17,12 @@ export default defineConfig({
             },
         }),
     ],
+    optimizeDeps: {
+        include: [
+            'resources/js/**/*.vue',
+            'resources/js/**/*.js',
+            'resources/js/**/*.jsx',
+            // 'resources/scss/**/*.scss',
+        ]
+    }
 });

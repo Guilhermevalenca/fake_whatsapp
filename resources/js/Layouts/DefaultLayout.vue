@@ -4,10 +4,50 @@
         <header class="mt-2 mr-2 ml-2">
             <section class="flex justify-between">
                 <v-card-title>Fake whatsapp</v-card-title>
-                <div>
-                    <v-btn icon="mdi-camera-outline" />
-                    <v-btn icon="mdi-magnify" />
-                    <v-btn icon="mdi-dots-vertical" />
+                <div class="flex">
+                    <v-tooltip text="Alterar o tema da pagina">
+                        <template #activator="{ props }">
+                            <v-btn
+                                v-bind="props"
+                                @click="alterTheme()"
+                                icon="mdi-theme-light-dark"
+                                class="mr-1"
+                            />
+                        </template>
+                    </v-tooltip>
+                    <v-tooltip text="Acessar a camera">
+                        <template #activator="{ props }">
+                            <v-btn
+                                icon="mdi-camera-outline"
+                                v-bind="props"
+                                class="mr-1"
+                            />
+                        </template>
+                    </v-tooltip>
+                    <v-tooltip text="Pesquisar">
+                        <template #activator="{ props }">
+                            <v-btn
+                                icon="mdi-magnify"
+                                v-bind="props"
+                                class="mr-1"
+                            />
+                        </template>
+                    </v-tooltip>
+                    <v-menu>
+                        <template #activator="{props:menu}">
+                            <v-tooltip text="Mais opções">
+                                <template #activator="{props: tooltip}">
+                                    <span v-bind="tooltip">
+                                        <v-btn
+                                            v-bind="menu"
+                                            icon="mdi-dots-vertical"
+                                        />
+                                    </span>
+                                </template>
+                            </v-tooltip>
+                        </template>
+                        <div>teste</div>
+                    </v-menu>
                 </div>
             </section>
             <section class="mt-1 flex">
@@ -52,9 +92,15 @@ export default {
             theme: useTheme()
         }
     },
+    methods: {
+        alterTheme() {
+            this.theme.global.name = this.theme.global.current.dark ? 'light' : 'dark';
+            localStorage.setItem('theme', this.theme.global.name);
+        }
+    },
     created() {
         this.theme.global.name = 'dark';
-    }
+    },
 }
 </script>
 
