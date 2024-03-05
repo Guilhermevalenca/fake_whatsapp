@@ -9,5 +9,5 @@ Route::prefix('chat')
     ->group(function () {
 
         Route::get('create', 'create')->name('chat_create');
-
+        
     });
