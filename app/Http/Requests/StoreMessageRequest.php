@@ -2,17 +2,16 @@
 
 namespace App\Http\Requests;
 
-use App\Models\Chat;
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreChatRequest extends FormRequest
+class StoreMessageRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return true;
+        return false;
     }
 
     /**
@@ -23,7 +22,7 @@ class StoreChatRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'contact_id' => ['numeric', 'required', 'exists:' . Chat::class . ',id']
+            //
         ];
     }
 }

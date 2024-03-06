@@ -20,6 +20,7 @@ return new class extends Migration
                 ->references('id')
                 ->on('users');
             $table->boolean('contact_blocked')->default(false);
+            $table->unique(['user_id', 'contact']);
             $table->timestamps();
         });
     }

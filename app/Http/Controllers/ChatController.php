@@ -2,13 +2,21 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Middleware\ChatShowNotFound;
 use App\Http\Requests\StoreChatRequest;
 use App\Http\Requests\UpdateChatRequest;
 use App\Models\Chat;
+use App\Models\Contact;
 use Inertia\Inertia;
 
 class ChatController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware(ChatShowNotFound::class)->only('show');
+    }
+
     /**
      * Display a listing of the resource.
      */
@@ -22,7 +30,13 @@ class ChatController extends Controller
      */
     public function create()
     {
-        return Inertia::render('Chat/CreateChat');
+        $contacts = Contact::where('user_id', '=', auth()->id())
+            ->select('id', 'contact')
+            ->with('data_contact:id,name')
+            ->get();
+        return Inertia::render('Chat/CreateChat', [
+            'contacts' => $contacts
+        ]);
     }
 
     /**
@@ -38,7 +52,9 @@ class ChatController extends Controller
      */
     public function show(Chat $chat)
     {
-        //
+        return Inertia::render('Chat/ChatOneOnOne', [
+            'chat' => $chat
+        ]);
     }
 
     /**

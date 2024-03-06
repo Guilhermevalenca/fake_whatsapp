@@ -3,16 +3,25 @@
         <v-card>
             <v-card-title class="text-center">Contatos</v-card-title>
             <v-card-actions class="flex justify-center m-1">
-                <v-card-subtitle>Novo grupo</v-card-subtitle>
-                <v-card-subtitle @click="show.newContact = true">Novo contato</v-card-subtitle>
-                <v-card-subtitle>Nova comunidade</v-card-subtitle>
+                <v-card-subtitle>
+                    <button>Novo grupo</button>
+                </v-card-subtitle>
+                <v-card-subtitle @click="show.newContact = true">
+                    <button>Novo contato</button>
+                </v-card-subtitle>
+                <v-card-subtitle>
+                    <button>Nova comunidade</button>
+                </v-card-subtitle>
             </v-card-actions>
             <v-card-text>
-                <!--            Renderizar contatos-->
+                <RenderContact v-for="contact in contacts" :key="contact.id" :contact="contact" />
             </v-card-text>
         </v-card>
         <v-dialog v-model="show.newContact">
-            <ChatNewContact class="pa-2" />
+            <NewContact
+                class="pa-2"
+                @closed="show.newContact = false"
+            />
         </v-dialog>
     </DefaultLayout>
 </template>
@@ -20,16 +29,21 @@
 <script>
 import {Link} from '@inertiajs/vue3';
 import DefaultLayout from "@/Layouts/DefaultLayout.vue";
-import ChatNewContact from "@/Components/Chat/ChatNewContact.vue";
+import NewContact from "@/Components/Contact/NewContact.vue";
+import RenderContact from "@/Components/Contact/RenderContact.vue";
+
 export default {
     name: "CreateChat",
-    components: {ChatNewContact, DefaultLayout, Link},
+    components: {RenderContact, NewContact, DefaultLayout, Link},
     data() {
         return {
             show: {
                 newContact: false
             }
         }
+    },
+    props: {
+        contacts: Array,
     }
 }
 </script>
