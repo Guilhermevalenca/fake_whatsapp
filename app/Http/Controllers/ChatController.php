@@ -5,17 +5,13 @@ namespace App\Http\Controllers;
 use App\Http\Middleware\ChatShowNotFound;
 use App\Http\Requests\StoreChatRequest;
 use App\Http\Requests\UpdateChatRequest;
+use App\Http\Resources\ChatResourceCreate;
 use App\Models\Chat;
 use App\Models\Contact;
 use Inertia\Inertia;
 
 class ChatController extends Controller
 {
-
-    public function __construct()
-    {
-        $this->middleware(ChatShowNotFound::class)->only('show');
-    }
 
     /**
      * Display a listing of the resource.
@@ -35,16 +31,16 @@ class ChatController extends Controller
             ->with('data_contact:id,name')
             ->get();
         return Inertia::render('Chat/CreateChat', [
-            'contacts' => $contacts
+            'contacts' => ChatResourceCreate::collection($contacts)
         ]);
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreChatRequest $request)
+    public function store(StoreChatRequest $request, Contact $contact)
     {
-        //
+        return response($contact, 200);
     }
 
     /**

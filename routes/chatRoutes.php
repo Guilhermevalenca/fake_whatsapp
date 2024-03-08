@@ -11,9 +11,8 @@ Route::prefix('chat')
 
         Route::get('create', 'create')
             ->name('chat_create');
-        Route::post('', 'store')
+        Route::post('{contact}', 'store')
             ->name('chat_store');
-        Route::middleware('webChat')
-            ->get('{chat}','show')
+        Route::get('{chat}','show')
             ->name('chat_show');
     });
