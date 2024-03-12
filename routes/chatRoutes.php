@@ -11,7 +11,7 @@ Route::prefix('chat')
 
         Route::get('create', 'create')
             ->name('chat_create');
-        Route::post('{contact}', 'store')
+        Route::post('', 'store')
             ->name('chat_store');
         Route::get('{chat}','show')
             ->name('chat_show');

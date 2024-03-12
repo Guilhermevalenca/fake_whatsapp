@@ -38,9 +38,9 @@ class ChatController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreChatRequest $request, Contact $contact)
+    public function store(StoreChatRequest $request)
     {
-        return response($contact, 200);
+        return response($request->input(), 200);
     }
 
     /**

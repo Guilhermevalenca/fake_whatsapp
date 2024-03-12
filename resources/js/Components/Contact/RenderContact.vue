@@ -1,14 +1,12 @@
 <template>
-    <Link :href="contact.exist_chat ? route( 'chat_show', {chat: this.contact.exist_chat}) : route('chat_store', {contact: this.contact.id})" :method="contact.exist_chat ? 'get' : 'post'" as="button">
-        <v-container>
-            <v-card-title>{{contact.data_contact[0].name}}</v-card-title>
-            <v-card-subtitle>Status fixo do usuário</v-card-subtitle>
-        </v-container>
-    </Link>
+    <v-container @click="contact.exist_chat ? getChat() : createChat()">
+        <v-card-title>{{contact.data_contact[0].name}}</v-card-title>
+        <v-card-subtitle>Status fixo do usuário</v-card-subtitle>
+    </v-container>
 </template>
 
 <script>
-import {Link} from '@inertiajs/vue3';
+import {Link, router, useForm} from '@inertiajs/vue3';
 export default {
     name: "RenderContact",
     components: {Link},
@@ -22,6 +20,17 @@ export default {
     },
     mounted() {
         console.log(this.contact);
+    },
+    methods: {
+        getChat() {
+            router.get(route('chat_show', {chat: this.contact.exist_chat}));
+        },
+        createChat() {
+            const {post} = useForm({
+                contact: this.contact.id
+            });
+            post(route('chat_store'));
+        },
     }
 }
 </script>
