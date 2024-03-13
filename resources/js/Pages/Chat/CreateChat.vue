@@ -28,13 +28,12 @@
 
 <script>
 import {Link} from '@inertiajs/vue3';
-import DefaultLayout from "@/Layouts/DefaultLayout.vue";
 import NewContact from "@/Components/Contact/NewContact.vue";
 import RenderContact from "@/Components/Contact/RenderContact.vue";
 
 export default {
     name: "CreateChat",
-    components: {RenderContact, NewContact, DefaultLayout, Link},
+    components: {RenderContact, NewContact, Link},
     data() {
         return {
             show: {

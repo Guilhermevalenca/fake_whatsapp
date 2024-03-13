@@ -6,10 +6,9 @@
 </template>
 
 <script>
-import {Link, router, useForm} from '@inertiajs/vue3';
+import {router} from '@inertiajs/vue3';
 export default {
     name: "RenderContact",
-    components: {Link},
     props: {
         contact: {
             id: Number,
@@ -26,10 +25,11 @@ export default {
             router.get(route('chat_show', {chat: this.contact.exist_chat}));
         },
         createChat() {
-            const {post} = useForm({
-                contact: this.contact.id
-            });
-            post(route('chat_store'));
+            window.axios.post(route('chat_store'), {
+                contact_id: this.contact.id
+            })
+                .then(response => router.get(route('chat_show', {chat: response.data.chat})))
+                .catch(error => console.log(error));
         },
     }
 }

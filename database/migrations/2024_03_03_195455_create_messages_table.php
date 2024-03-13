@@ -25,6 +25,7 @@ return new class extends Migration
                 ->on('users');
             $table->boolean('visible_to_me')->default(true);
             $table->boolean('visible_to_you')->default(true);
+            $table->boolean('is_send')->default(false);
             $table->timestamps();
         });
         DB::statement("ALTER TABLE messages ADD CONSTRAINT not_null_content_and_path check( content IS NOT NULL OR path IS NOT NULL)");

@@ -23,7 +23,7 @@ class StoreChatRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'contact_id' => ['numeric', 'required', 'exists:' . Chat::class . ',id']
+            'contact_id' => ['numeric', 'required', 'unique:' . Chat::class . ',contact_id']
         ];
     }
 }

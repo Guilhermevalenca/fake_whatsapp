@@ -8,6 +8,7 @@ import { ZiggyVue } from '../../vendor/tightenco/ziggy';
 
 import {loadFonts} from "@/plugins/webFontLoades.js";
 import Vuetify from './plugins/vuetify.js';
+import DefaultLayout from "@/Layouts/DefaultLayout.vue";
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 
@@ -24,6 +25,7 @@ createInertiaApp({
         app.use(Vuetify);
         app.use(plugin);
         app.use(ZiggyVue);
+        app.component('DefaultLayout', DefaultLayout);
         app.mount(el);
         return app;
     },

@@ -12,12 +12,11 @@
 </template>
 
 <script>
-import DefaultLayout from "@/Layouts/DefaultLayout.vue";
 import {Link} from "@inertiajs/vue3";
 
 export default {
     name: 'Dashboard',
-    components: {DefaultLayout, Link},
+    components: {Link},
     methods: {
 
     },
