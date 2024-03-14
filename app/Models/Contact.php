@@ -12,7 +12,8 @@ class Contact extends Model
     protected $fillable = [
         'user_id',
         'contact',
-        'contact_blocked'
+        'contact_blocked',
+        'chat_id'
     ];
     public function data_contact(): HasMany
     {

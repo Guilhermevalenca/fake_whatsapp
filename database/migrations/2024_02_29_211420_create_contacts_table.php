@@ -19,6 +19,10 @@ return new class extends Migration
             $table->foreignId('contact')
                 ->references('id')
                 ->on('users');
+            $table->foreignId('chat_id')
+                ->nullable()
+                ->references('id')
+                ->on('chats');
             $table->boolean('contact_blocked')->default(false);
             $table->unique(['user_id', 'contact']);
             $table->timestamps();

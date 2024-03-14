@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests;
 
-use App\Models\Chat;
+use App\Models\Contact;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreChatRequest extends FormRequest
@@ -23,7 +23,7 @@ class StoreChatRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'contact_id' => ['numeric', 'required', 'unique:' . Chat::class . ',contact_id']
+            'contact_id' => ['numeric', 'required', 'exists:' . Contact::class . ',id']
         ];
     }
 }

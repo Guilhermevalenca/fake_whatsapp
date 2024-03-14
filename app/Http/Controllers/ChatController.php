@@ -41,7 +41,11 @@ class ChatController extends Controller
     public function store(StoreChatRequest $request)
     {
         $validation = $request->validated();
-        $chat = Chat::create($validation);
+        $chat = Chat::create();
+        Contact::find($validation['contact_id'])
+            ->update([
+                'chat_id' => $chat->id
+            ]);
         return response([
             'chat' => $chat
         ], 200);
@@ -53,12 +57,9 @@ class ChatController extends Controller
     public function show(Chat $chat)
     {
         $messages = $chat->messages()->get();
-        $contact = $chat->contact()->first();
-//        $contact['user'] =
         return Inertia::render('Chat/ChatOneOnOne', [
             'chat' => $chat,
-            'messages' => $messages,
-            'contact' => $contact
+            'messages' => $messages
         ]);
     }
 

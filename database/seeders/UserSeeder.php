@@ -16,12 +16,14 @@ class UserSeeder extends Seeder
         User::factory()->create([
             'name' => 'Guilherme Valença',
             'email' => 'gui@gmail.com',
+            'phone' => '81994139948',
             'email_verified_at' => now(),
             'password' => 'ipi123'
         ]);
         User::factory()->create([
             'name' => 'Claudiane Rodrigues',
             'email' => 'cra@gmail.com',
+            'phone' => '819941399482',
             'email_verified_at' => now(),
             'password' => 'ipi123'
         ]);

@@ -10,6 +10,7 @@ import {ref} from "vue";
 const form = useForm({
     name: '',
     email: '',
+    phone: '',
     password: '',
     password_confirmation: '',
 });
@@ -57,6 +58,25 @@ const showConfirmationPassword = ref(false);
                     :rules="defaultRules"
                 />
                 <InputError class="mt-2" :message="form.errors.email" />
+            </div>
+
+            <div class="mt-4">
+                <v-text-field-simplemask
+                    label="Telefone"
+                    type="text"
+                    v-model="form.phone"
+                    :rules="defaultRules"
+                    :options="{
+                        inputMask: '(##) #####-####',
+                        outputMask: '###########',
+                        empty: null,
+                        applyAfter: false,
+                        alphanumeric: true,
+                        lowerCase: false,
+                    }"
+                />
+                <div>{{form.phone}}</div>
+                <InputError class="mt-2" :message="form.errors.phone" />
             </div>
 
             <div class="mt-4">

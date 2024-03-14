@@ -46,7 +46,13 @@
                                 </template>
                             </v-tooltip>
                         </template>
-                        <div>teste</div>
+                        <v-list>
+                            <Link :href="route('logout')" method="post" as="button">
+                                <v-list-item to="/">
+                                    Log Out
+                                </v-list-item>
+                            </Link>
+                        </v-list>
                     </v-menu>
                 </div>
             </section>
@@ -75,12 +81,12 @@
 
 
 <script>
-import {Head} from '@inertiajs/vue3'
+import {Head, Link} from '@inertiajs/vue3'
 import {useTheme} from "vuetify";
 import NavLink from "@/Components/NavLink.vue";
 export default {
     name: "DefaultLayout",
-    components: { NavLink, Head},
+    components: {Link, NavLink, Head},
     props: {
         title: {
             type: String,

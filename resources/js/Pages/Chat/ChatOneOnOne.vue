@@ -8,10 +8,9 @@ export default {
     props: {
         chat: Object,
         messages: Object,
-        contact: Object
     },
     mounted() {
-        console.log(this.chat, this.messages, this.contact);
+        console.log(this.chat, this.messages);
     }
 }
 </script>

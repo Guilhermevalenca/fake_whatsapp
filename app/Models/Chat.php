@@ -11,7 +11,6 @@ class Chat extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'contact_id',
         'fixed',
         'archived'
     ];
@@ -19,9 +18,5 @@ class Chat extends Model
     public function messages(): HasMany
     {
         return $this->hasMany(Message::class, 'chat_id');
-    }
-    public function contact(): HasOne
-    {
-        return $this->hasOne(Contact::class, 'id', 'contact_id');
     }
 }
