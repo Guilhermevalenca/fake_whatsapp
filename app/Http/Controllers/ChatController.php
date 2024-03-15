@@ -2,10 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Middleware\ChatShowNotFound;
 use App\Http\Requests\StoreChatRequest;
 use App\Http\Requests\UpdateChatRequest;
-use App\Http\Resources\ChatResourceCreate;
 use App\Models\Chat;
 use App\Models\Contact;
 use Inertia\Inertia;
@@ -27,11 +25,11 @@ class ChatController extends Controller
     public function create()
     {
         $contacts = Contact::where('user_id', '=', auth()->id())
-            ->select('id', 'contact')
-            ->with('data_contact:id,name')
+            ->select('id','name', 'chat_id','phone')
+            ->with('data_contact:id,status,phone')
             ->get();
         return Inertia::render('Chat/CreateChat', [
-            'contacts' => ChatResourceCreate::collection($contacts)
+            'contacts' => $contacts
         ]);
     }
 
@@ -41,13 +39,39 @@ class ChatController extends Controller
     public function store(StoreChatRequest $request)
     {
         $validation = $request->validated();
-        $chat = Chat::create();
-        Contact::find($validation['contact_id'])
-            ->update([
+        $contact = Contact::find($validation['contact_id']);
+        $contact['data_contact'] = $contact->data_contact()->first();
+        $heHasMyContact = Contact::where('phone', '=', auth()->user()->phone)
+            ->where('user_id', '=', $contact['data_contact']->id);
+        if($heHasMyContact->exists()) {
+            $data_heHasMyContact = $heHasMyContact->first();
+            if($data_heHasMyContact->chat_id) {
+                $contact->update([
+                    'chat_id' => $data_heHasMyContact->chat_id
+                ]);
+            } else {
+                $chat = Chat::create();
+                $contact->update([
+                    'chat_id' => $chat->id
+                ]);
+                $heHasMyContact->update([
+                    'chat_id' => $chat->id
+                ]);
+            }
+        } else {
+            $chat = Chat::create();
+            $contact->update([
                 'chat_id' => $chat->id
             ]);
+            Contact::create([
+                'name' => auth()->user()->phone,
+                'user_id' => $contact['data_contact']->id,
+                'phone' => auth()->user()->phone,
+                'chat_id' => $chat->id
+            ]);
+        }
         return response([
-            'chat' => $chat
+            'chat' => $chat,
         ], 200);
     }
 

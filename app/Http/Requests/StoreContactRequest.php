@@ -24,7 +24,14 @@ class StoreContactRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'contact' => ['required', 'numeric', 'exists:' . User::class . ',id']
+            'phone' => ['required', 'string', 'exists:App\Models\User,phone'],
+            'name' => ['required', 'string']
+        ];
+    }
+    public function messages(): array
+    {
+        return [
+            'phone.exists' => 'Telefone selecionado não existe'
         ];
     }
 }

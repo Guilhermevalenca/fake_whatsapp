@@ -1,7 +1,9 @@
 <template>
-    <v-container @click="contact.exist_chat ? getChat() : createChat()">
-        <v-card-title>{{contact.data_contact[0].name}}</v-card-title>
-        <v-card-subtitle>Status fixo do usuário</v-card-subtitle>
+    <v-container @click="contact.chat_id ? getChat() : createChat()">
+        <v-card>
+            <v-card-title>{{contact.name}}</v-card-title>
+            <v-card-subtitle>{{contact.data_contact[0].status ?? 'Usuário sem status'}}</v-card-subtitle>
+        </v-card>
     </v-container>
 </template>
 
@@ -12,9 +14,16 @@ export default {
     props: {
         contact: {
             id: Number,
-            contact: Number,
-            data_contact: Array,
-            exist_chat: Object
+            name: String,
+            chat_id: Number | null,
+            phone: String,
+            data_contact: [
+                {
+                    id: Number,
+                    status: String | null,
+                    phone: String
+                }
+            ]
         }
     },
     mounted() {
@@ -28,7 +37,10 @@ export default {
             window.axios.post(route('chat_store'), {
                 contact_id: this.contact.id
             })
-                .then(response => router.get(route('chat_show', {chat: response.data.chat})))
+                .then(response => {
+                    console.log(response.data);
+                    // router.get(route('chat_show', {chat: response.data.chat}))
+                })
                 .catch(error => console.log(error));
         },
     }

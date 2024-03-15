@@ -15,10 +15,19 @@ const form = useForm({
     password_confirmation: '',
 });
 
+const myForm = ref();
+
 const submit = () => {
-    form.post(route('register'), {
-        onFinish: () => form.reset('password', 'password_confirmation'),
-    });
+    myForm.value.validate()
+        .then(result => {
+            if(result.valid) {
+                form.phone = form.phone.replace(/[()]/g, '')
+                    .replace(/\s/g, '');
+                form.post(route('register'), {
+                    onFinish: () => form.reset('password', 'password_confirmation'),
+                });
+            }
+        });
 };
 
 const defaultRules = [
@@ -39,7 +48,7 @@ const showConfirmationPassword = ref(false);
     <GuestLayout>
         <Head title="Register" />
 
-        <form @submit.prevent="submit">
+        <v-form ref="myForm" @submit.prevent="submit">
             <div>
                 <v-text-field
                     label="Nome"
@@ -61,21 +70,17 @@ const showConfirmationPassword = ref(false);
             </div>
 
             <div class="mt-4">
-                <v-text-field-simplemask
+                <input v-show="false"
+                       v-model="form.phone"
+                       v-mask
+                       data-maska="(##) ##### ####"
+                >
+                <v-text-field
                     label="Telefone"
                     type="text"
                     v-model="form.phone"
                     :rules="defaultRules"
-                    :options="{
-                        inputMask: '(##) #####-####',
-                        outputMask: '###########',
-                        empty: null,
-                        applyAfter: false,
-                        alphanumeric: true,
-                        lowerCase: false,
-                    }"
                 />
-                <div>{{form.phone}}</div>
                 <InputError class="mt-2" :message="form.errors.phone" />
             </div>
 
@@ -103,7 +108,7 @@ const showConfirmationPassword = ref(false);
                 <InputError class="mt-2" :message="form.errors.password_confirmation" />
             </div>
 
-            <div class="flex items-center justify-end mt-4">
+            <v-container class="flex items-center justify-end mt-4 mb-6">
                 <Link
                     :href="route('login')"
                     class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
@@ -114,7 +119,7 @@ const showConfirmationPassword = ref(false);
                 <PrimaryButton class="ms-4" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
                     Registrar
                 </PrimaryButton>
-            </div>
-        </form>
+            </v-container>
+        </v-form>
     </GuestLayout>
 </template>

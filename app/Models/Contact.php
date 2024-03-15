@@ -11,12 +11,13 @@ class Contact extends Model
     use HasFactory;
     protected $fillable = [
         'user_id',
-        'contact',
+        'phone',
+        'name',
         'contact_blocked',
         'chat_id'
     ];
     public function data_contact(): HasMany
     {
-        return $this->hasMany(User::class, 'id', 'contact');
+        return $this->hasMany(User::class, 'phone', 'phone');
     }
 }

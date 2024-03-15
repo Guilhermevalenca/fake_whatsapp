@@ -14,12 +14,12 @@
                 </v-card-subtitle>
             </v-card-actions>
             <v-card-text>
-                <RenderContact v-for="contact in contacts.data" :key="contact.id" :contact="contact" />
+                <RenderContact v-for="contact in contacts" :key="contact.id" :contact="contact" />
             </v-card-text>
         </v-card>
         <v-dialog v-model="show.newContact">
             <NewContact
-                class="pa-2"
+                class="pa-4"
                 @closed="show.newContact = false"
             />
         </v-dialog>
@@ -42,9 +42,7 @@ export default {
         }
     },
     props: {
-        contacts: {
-            data: Array
-        },
+        contacts: Object,
     },
 }
 </script>

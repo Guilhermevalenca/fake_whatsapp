@@ -7,9 +7,7 @@ Route::prefix('contact')
     ->controller(ContactController::class)
     ->group(function () {
 
-        Route::post('addContact', 'store')
+        Route::post('', 'store')
             ->name('contact_store');
-        Route::post('searchContactByEmail', 'searchContactByEmail')
-            ->name('contact_search');
 
     });

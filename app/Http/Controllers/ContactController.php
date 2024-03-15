@@ -32,6 +32,7 @@ class ContactController extends Controller
      */
     public function store(StoreContactRequest $request)
     {
+        sleep(2);
         $validation = $request->validated();
         $validation['user_id'] = auth()->id();
         Contact::create($validation);
@@ -68,16 +69,5 @@ class ContactController extends Controller
     public function destroy(Contact $contact)
     {
         //
-    }
-
-    public function searchContactByEmail(Request $request)
-    {
-        $request->validate([
-            'email' => ['string', 'required']
-        ]);
-        $result = User::select('id', 'name', 'email')
-            ->where('email', 'LIKE', $request->input('email') . '%')
-            ->get();
-        return response($result, 200);
     }
 }

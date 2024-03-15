@@ -23,10 +23,17 @@ const form = useForm({
     remember: false,
 });
 
+const myForm = ref();
+
 const submit = () => {
-    form.post(route('login'), {
-        onFinish: () => form.reset('password'),
-    });
+    myForm.value.validate()
+        .then(result => {
+            if(result.valid) {
+                form.post(route('login'), {
+                    onFinish: () => form.reset('password'),
+                });
+            }
+        })
 };
 const defaultRules = [
     value => {
@@ -47,7 +54,7 @@ const showPassword = ref(false);
             {{ status }}
         </div>
 
-        <form @submit.prevent="submit">
+        <v-form ref="myForm" @submit.prevent="submit">
             <div>
                 <v-text-field
                     label="Email"
@@ -98,6 +105,6 @@ const showPassword = ref(false);
                     Não está registrado?
                 </Link>
             </div>
-        </form>
+        </v-form>
     </GuestLayout>
 </template>

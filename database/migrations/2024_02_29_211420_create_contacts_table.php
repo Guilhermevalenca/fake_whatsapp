@@ -13,18 +13,20 @@ return new class extends Migration
     {
         Schema::create('contacts', function (Blueprint $table) {
             $table->id();
+            $table->string('name');
             $table->foreignId('user_id')
                 ->references('id')
                 ->on('users');
-            $table->foreignId('contact')
-                ->references('id')
+            $table->string('phone');
+            $table->foreign('phone')
+                ->references('phone')
                 ->on('users');
             $table->foreignId('chat_id')
                 ->nullable()
                 ->references('id')
                 ->on('chats');
             $table->boolean('contact_blocked')->default(false);
-            $table->unique(['user_id', 'contact']);
+            $table->unique(['user_id', 'phone']);
             $table->timestamps();
         });
     }
@@ -34,6 +36,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('contatcs');
+        Schema::dropIfExists('contacts');
     }
 };

@@ -1,26 +1,32 @@
 <template>
     <v-card>
-        <v-autocomplete
-            label="Email do contato"
-            :items="contacts"
-            v-model:search="contact"
-            item-title="email"
-            item-value="id"
-            v-model="form.contact"
-        />
-        <v-container v-if="form.contact">
-            <v-list>
-                <v-list-item-title>Pessoa selecionada:</v-list-item-title>
-                <v-list-item>Nome: {{contact_name}}</v-list-item>
-                <v-list-item>Email: {{contact_email}}</v-list-item>
-            </v-list>
-        </v-container>
-        <v-btn
-            :disabled="! form.contact"
-            @click="addContact()"
-        >
-            Adicionar contato
-        </v-btn>
+        <v-form ref="formRef" @submit.prevent="submit()">
+            <v-text-field
+                label="Nome"
+                v-model="form.name"
+                placeholder="Escolha o nome do seu contato"
+                hint="Exemplo: Dom Pedro primeiro"
+                persistent-hint
+                :rules="rules.name"
+                class="pt-2"
+            />
+            <input v-show="false" v-mask data-maska="(##) ##### ####" v-model="form.phone">
+            <v-text-field
+                label="Telefone"
+                v-model="form.phone"
+                hint="Exemplo: (00) 00000 0000"
+                persistent-hint
+                :rules="rules.phone"
+                class="pt-2 pb-6"
+            />
+            <v-btn type="submit"
+                   class="w-full"
+                   :loading="form.processing"
+                   :disabled="form.processing"
+            >
+                Adicionar contato
+            </v-btn>
+        </v-form>
     </v-card>
 </template>
 
@@ -31,54 +37,53 @@ export default {
     name: "ChatNewContact",
     emits: ['closed'],
     data() {
+        const defaultRule = value => {
+            return value ? true : 'É necessário preencher este campo';
+        }
         return {
-            contact: '',
-            contacts: [],
             form: useForm({
-                contact: '',
-            })
+                phone: '',
+                name: ''
+            }),
+            rules: {
+                name: [
+                    value => defaultRule(value),
+                    () => {
+                        if(this.form.errors && this.form.errors.name) {
+                            return this.form.errors.name;
+                        }
+                        return true;
+                    }
+                ],
+                phone: [
+                    value => defaultRule(value),
+                    () => {
+                        if(this.form.errors && this.form.errors.phone) {
+                            return this.form.errors.phone;
+                        }
+                        return true;
+                    }
+                ]
+            }
         }
     },
     methods: {
-        async getContacts() {
-            axios.post(route('contact_search'), {
-                email: this.contact
-            })
-                .then(response => this.contacts = response.data)
-                .catch(error => console.log(error));
-        },
-        addContact() {
-            this.form.post(route('contact_store'), {
-                onError: (error) => console.log(error),
-                onSuccess: () => this.$emit('closed')
-            });
+        submit() {
+            this.$refs.formRef.validate()
+                .then(result => {
+                    if(result.valid) {
+                        this.form.phone = this.form.phone.replace(/[()]/g, '')
+                            .replace(/\s/g, '');
+                        this.form.post(route('contact_store'), {
+                            onSuccess: () => this.$emit('closed'),
+                            onError: () => this.$refs.formRef.validate()
+                        });
+                    }
+                });
         }
     },
     watch: {
-        contact: {
-            handler($new) {
-                if($new && ($new.length === 1 || $new.length === 3 || $new.length === 5)) {
-                    this.getContacts();
-                }
-            },
-            deep: true
-        }
-    },
-    computed: {
-        contact_name() {
-            return this.contacts.map(value => {
-                if(value.id === this.form.contact) {
-                    return value.name;
-                }
-            })[0]
-        },
-        contact_email() {
-            return this.contacts.map(value => {
-                if(value.id === this.form.contact) {
-                    return value.email
-                }
-            })[0]
-        }
+
     }
 }
 </script>

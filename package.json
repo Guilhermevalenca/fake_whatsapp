@@ -27,7 +27,6 @@
         "pusher-js": "^8.4.0-rc2",
         "roboto-fontface": "*",
         "vuetify": "^3.5.6",
-        "vuetify-mask": "^1.1.2",
         "webfontloader": "^1.0.0"
     }
 }
