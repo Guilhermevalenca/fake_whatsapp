@@ -1,7 +1,6 @@
 <?php
 
 use App\Http\Controllers\ChatController;
-use App\Http\Middleware\ChatShowNotFound;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('chat')

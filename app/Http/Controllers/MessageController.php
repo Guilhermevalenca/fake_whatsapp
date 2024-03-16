@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\SendMessageEvent;
 use App\Http\Requests\StoreMessageRequest;
 use App\Http\Requests\UpdateMessageRequest;
+use App\Models\Chat;
+use App\Models\Contact;
 use App\Models\Message;
 
 class MessageController extends Controller
@@ -27,17 +30,29 @@ class MessageController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreMessageRequest $request)
+    public function store(StoreMessageRequest $request, Chat $chat)
     {
-        //
+        $validation = $request->validated();
+        $validation['chat_id'] = $chat->id;
+        $validation['user_id'] = auth()->id();
+        Message::create($validation);
+        $contact = Contact::where('chat_id', '=', $chat->id)
+            ->where('user_id', '!=', auth()->id())
+            ->select('user_id')
+            ->first();
+        event(new SendMessageEvent($chat->id, $contact->user_id));
+        return back();
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Message $message)
+    public function show(Chat $chat)
     {
-        //
+        $messages = $chat->messages()
+            ->orderByDesc('id')
+            ->paginate(30);
+        return response($messages, 200);
     }
 
     /**

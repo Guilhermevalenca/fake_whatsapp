@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\NewChat;
 use App\Http\Requests\StoreChatRequest;
 use App\Http\Requests\UpdateChatRequest;
 use App\Models\Chat;
@@ -40,9 +41,9 @@ class ChatController extends Controller
     {
         $validation = $request->validated();
         $contact = Contact::find($validation['contact_id']);
-        $contact['data_contact'] = $contact->data_contact()->first();
+        $data_contact = $contact->data_contact()->first();
         $heHasMyContact = Contact::where('phone', '=', auth()->user()->phone)
-            ->where('user_id', '=', $contact['data_contact']->id);
+            ->where('user_id', '=', $data_contact->id);
         if($heHasMyContact->exists()) {
             $data_heHasMyContact = $heHasMyContact->first();
             if($data_heHasMyContact->chat_id) {
@@ -65,7 +66,7 @@ class ChatController extends Controller
             ]);
             Contact::create([
                 'name' => auth()->user()->phone,
-                'user_id' => $contact['data_contact']->id,
+                'user_id' => $data_contact->id,
                 'phone' => auth()->user()->phone,
                 'chat_id' => $chat->id
             ]);
@@ -80,10 +81,18 @@ class ChatController extends Controller
      */
     public function show(Chat $chat)
     {
-        $messages = $chat->messages()->get();
+        $messages = $chat->messages()
+            ->orderByDesc('id')
+            ->paginate(30);
+        $contact = Contact::where('chat_id', '=' , $chat->id)
+            ->where('user_id', '=', auth()->id())
+            ->first()
+            ->data_contact()
+            ->first();
         return Inertia::render('Chat/ChatOneOnOne', [
             'chat' => $chat,
-            'messages' => $messages
+            'messages' => $messages,
+            'contact' => $contact
         ]);
     }
 

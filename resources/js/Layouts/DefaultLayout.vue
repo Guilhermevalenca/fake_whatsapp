@@ -104,9 +104,6 @@ export default {
             localStorage.setItem('theme', this.theme.global.name);
         }
     },
-    created() {
-        this.theme.global.name = 'dark';
-    },
 }
 </script>
 

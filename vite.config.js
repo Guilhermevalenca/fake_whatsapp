@@ -22,7 +22,7 @@ export default defineConfig({
             'resources/js/**/*.vue',
             'resources/js/**/*.js',
             'resources/js/**/*.jsx',
-            // 'resources/scss/**/*.scss',
+            'resources/scss/**/*.scss',
         ]
     }
 });

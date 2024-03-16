@@ -26,20 +26,16 @@ export default {
             ]
         }
     },
-    mounted() {
-        console.log(this.contact);
-    },
     methods: {
         getChat() {
-            router.get(route('chat_show', {chat: this.contact.exist_chat}));
+            router.get(route('chat_show', {chat: this.contact.chat_id}));
         },
         createChat() {
             window.axios.post(route('chat_store'), {
                 contact_id: this.contact.id
             })
                 .then(response => {
-                    console.log(response.data);
-                    // router.get(route('chat_show', {chat: response.data.chat}))
+                    router.get(route('chat_show', {chat: response.data.chat}))
                 })
                 .catch(error => console.log(error));
         },
