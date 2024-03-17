@@ -2,7 +2,7 @@
     <v-app>
         <Head :title="title" />
         <header class="mt-2 mr-2 ml-2">
-            <section class="flex justify-between">
+            <v-app-bar class="flex justify-between">
                 <v-card-title>Fake whatsapp</v-card-title>
                 <div class="flex">
                     <v-tooltip text="Alterar o tema da pagina">
@@ -55,12 +55,14 @@
                         </v-list>
                     </v-menu>
                 </div>
-            </section>
-            <section class="mt-1 flex">
+            </v-app-bar>
+        </header>
+        <v-main class="mr-2 ml-2">
+            <section class="flex">
                 <NavLink :href="route('community')" :active="route().current('community')">
                     <v-icon icon="mdi-account-group" />
                 </NavLink>
-                <NavLink :href="route('home')" :active="route().current('home')">
+                <NavLink :href="route('contact_index')" :active="route().current('contact_index')">
                     <v-card-subtitle>Conversas</v-card-subtitle>
                 </NavLink>
                 <NavLink :href="route('status')" :active="route().current('status')">
@@ -70,8 +72,6 @@
                     <v-card-subtitle>Ligações</v-card-subtitle>
                 </NavLink>
             </section>
-        </header>
-        <v-main class="mr-2 ml-2">
             <section>
                 <slot />
             </section>

@@ -2,12 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Requests\StoreContactRequest;
 use App\Http\Requests\UpdateContactRequest;
+use App\Models\Chat;
 use App\Models\Contact;
-use App\Models\User;
-use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class ContactController extends Controller
 {
@@ -16,7 +15,19 @@ class ContactController extends Controller
      */
     public function index()
     {
-        //
+        $contacts = Contact::where('user_id', '=', auth()->id())
+            ->whereNotNull('chat_id')
+            ->with(['chat' => function ($query) {
+                $query->with('current_message');
+            }])
+            ->whereHas('chat', function ($query) {
+                $query->where('archived', '=', 0);
+            })
+            ->get();
+
+        return Inertia::render('Dashboard',[
+            'contacts' => $contacts
+        ]);
     }
 
     /**

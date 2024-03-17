@@ -51,7 +51,7 @@ class MessageController extends Controller
     {
         $messages = $chat->messages()
             ->orderByDesc('id')
-            ->paginate(30);
+            ->paginate(5);
         return response($messages, 200);
     }
 

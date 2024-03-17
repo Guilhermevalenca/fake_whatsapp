@@ -18,7 +18,7 @@ use Inertia\Inertia;
 
 Route::get('/', function () {
     if(auth()->check()) {
-        return Inertia::render('Dashboard');
+        return to_route('contact_index');
     }
     return Inertia::render('Welcome', [
         'canLogin' => Route::has('login'),

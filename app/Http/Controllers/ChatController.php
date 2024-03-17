@@ -83,7 +83,7 @@ class ChatController extends Controller
     {
         $messages = $chat->messages()
             ->orderByDesc('id')
-            ->paginate(30);
+            ->paginate(5);
         $contact = Contact::where('chat_id', '=' , $chat->id)
             ->where('user_id', '=', auth()->id())
             ->first()

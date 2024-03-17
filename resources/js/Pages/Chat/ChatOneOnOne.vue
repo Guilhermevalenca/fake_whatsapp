@@ -86,6 +86,15 @@ export default {
             }
         }
     },
+    watch: {
+        "messages.data": {
+            handler($new) {
+                let merge = [...$new, ...this.reverseOrientationMessageData];
+                this.reverseOrientationMessageData = merge.sort( (a,b) => a.id - b.id);
+            },
+            deep: true
+        }
+    },
 }
 </script>
 
