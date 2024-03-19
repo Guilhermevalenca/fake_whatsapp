@@ -1,9 +1,9 @@
 <template>
     <v-app>
-        <Head :title="contact.name" />
+        <Head :title="contact.name ? contact.name : 'Desconhecido'" />
         <v-app-bar class="text-center">
-            <v-btn icon="mdi-arrow-left" @click="getChats()" />
-            <div>{{contact.name}}</div>
+            <v-btn icon="mdi-arrow-left" @click="backPage()" />
+            <div>{{contact.name ? contact.name : contact.phone}}</div>
             <div class="d-flex justify-end">
                 <v-btn icon="mdi-video" />
                 <v-btn icon="mdi-phone" />
@@ -27,7 +27,11 @@
                 ></v-btn>
             </template>
             <v-container>
-                <RenderMessages v-for="message in reverseOrientationMessageData" :key="message.id" :message="message" />
+                <RenderMessages
+                    v-for="message in reverseOrientationMessageData"
+                    :key="message.id"
+                    :message="message"
+                />
             </v-container>
         </v-infinite-scroll>
         <v-footer class="position-fixed top-[36rem] w-full ma-0">
@@ -37,7 +41,7 @@
 </template>
 
 <script>
-import {router, Head} from "@inertiajs/vue3";
+import {Head, router} from "@inertiajs/vue3";
 import RenderMessages from "@/Components/Chat/RenderMessages.vue";
 import SendMessage from "@/Components/Chat/SendMessage.vue";
 export default {
@@ -55,8 +59,8 @@ export default {
         }
     },
     methods: {
-        getChats() {
-            router.get(route('chat_create'));
+        backPage() {
+            router.get(route('contact_index'));
         },
         getMoreMessages({done}) {
             done('loading');
@@ -86,12 +90,20 @@ export default {
         }
     },
     created() {
-        this.$Echo.channel('Messages_' + this.chat.id)
-            .listen('SendMessageEvent', (data) => {
+        const echoChannel = this.$Echo.channel('Messages_' + this.chat.id);
+        echoChannel.listen('SendMessageEvent', (data) => {
                 const findId = this.reverseOrientationMessageData.find(message => message.id === data.message.id);
                 if(!findId) {
                     this.reverseOrientationMessageData.push(data.message);
                 }
+            });
+        echoChannel.listen('UpdateCheckMessageEvent', (data) => {
+            this.reverseOrientationMessageData.map(message => {
+                    if(data.messages.find(value => value.id === message.id)) {
+                        message.is_send = 1;
+                    }
+                    return message;
+                });
             });
     },
 }

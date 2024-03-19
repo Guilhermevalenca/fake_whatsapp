@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\UpdateCheckMessageEvent;
 use App\Events\UpdatedContactsEvent;
 use App\Http\Requests\StoreChatRequest;
 use App\Http\Requests\UpdateChatRequest;
 use App\Models\Chat;
 use App\Models\Contact;
+use App\Models\Message;
 use Inertia\Inertia;
 
 class ChatController extends Controller
@@ -74,14 +76,29 @@ class ChatController extends Controller
      */
     public function show(Chat $chat)
     {
+        $messagesToEvent = Message::where('chat_id', '=', $chat->id)
+            ->where('user_id', '!=', auth()->id());
+        $messagesToEvent->update([
+                'is_send' => 1
+            ]);
+        event(new UpdateCheckMessageEvent($chat->id, $messagesToEvent->get()));
         $messages = $chat->messages()
             ->orderByDesc('id')
             ->paginate(30);
         $contact = Contact::where('chat_id', '=' , $chat->id)
-            ->where('user_id', '=', auth()->id())
-            ->first()
-            ->data_contact()
-            ->first();
+            ->where('user_id', '=', auth()->id());
+        if($contact->exists()) {
+            $contact = $contact->first()
+                ->data_contact()
+                ->first();
+        } else {
+            $contact = Contact::where('chat_id', '=', $chat->id)
+                ->where('phone', '=', auth()->user()->phone)
+                ->first()
+                ->user()
+                ->select('id', 'email', 'phone', 'status', 'profile')
+                ->first();
+        }
         return Inertia::render('Chat/ChatOneOnOne', [
             'chat' => $chat,
             'messages' => $messages,

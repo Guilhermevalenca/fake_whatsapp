@@ -1,6 +1,12 @@
 <template>
     <div :class="['flex', message.user_id === $page.props.auth.user.id ? 'justify-end' : 'justify-start']">
-        <div>{{message.content}}</div>
+        <div class="d-flex">
+            <div class="pr-1">{{message.content}}</div>
+            <v-icon
+                v-if="message.user_id === $page.props.auth.user.id"
+                :icon="message.is_send ? 'mdi-check-all' : 'mdi-check'"
+            />
+        </div>
     </div>
 </template>
 

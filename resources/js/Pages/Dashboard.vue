@@ -1,8 +1,11 @@
 <template>
     <DefaultLayout title="Dashboard">
         <v-container>
-            <v-card>
-                <RenderChat v-for="contact in contacts.data" :key="contact.id" :contact="contact" />
+            <v-card
+                v-for="contact in contacts.data"
+                :key="contact.id"
+            >
+                <RenderChat :contact="contact" />
             </v-card>
         </v-container>
         <Link :href="route('chat_create')" >

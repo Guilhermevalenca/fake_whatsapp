@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Models\Message;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -15,12 +16,17 @@ class ContactIndexResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+        $unread_messages = Message::where('chat_id','=', $this->chat->id)
+            ->where('user_id', '!=', auth()->id())
+            ->where('is_send', '=', 0)
+            ->count();
         return [
             'id' => $this->id,
-            'name' => $this->user_id === auth()->id() ? $this->name : $this->phone . '(Contato desconhecido)',
+            'name' => $this->user_id === auth()->id() ? $this->name : User::select('phone')->find($this->user_id)->phone . '(Contato desconhecido)',
             'user_id' => $this->user_id,
             'contact_blocked' => $this->contact_blocked,
             'chat_id' => $this->chat_id,
+            'unread_messages' => $unread_messages,
             'chat' => [
                 'id' => $this->chat->id,
                 'fixed' => $this->chat->fixed,
