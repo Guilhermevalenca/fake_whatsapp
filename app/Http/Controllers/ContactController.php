@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreContactRequest;
 use App\Http\Requests\UpdateContactRequest;
+use App\Http\Resources\ContactIndexResource;
 use App\Models\Chat;
 use App\Models\Contact;
 use Inertia\Inertia;
@@ -15,8 +16,9 @@ class ContactController extends Controller
      */
     public function index()
     {
-        $contacts = Contact::where('user_id', '=', auth()->id())
-            ->whereNotNull('chat_id')
+        $contacts = Contact::whereNotNull('chat_id')
+            ->where('user_id', '=', auth()->id())
+            ->orWhere('phone', auth()->user()->phone)
             ->with(['chat' => function ($query) {
                 $query->with('current_message');
             }])
@@ -26,7 +28,7 @@ class ContactController extends Controller
             ->get();
 
         return Inertia::render('Dashboard',[
-            'contacts' => $contacts
+            'contacts' => ContactIndexResource::collection($contacts)
         ]);
     }
 
@@ -43,7 +45,6 @@ class ContactController extends Controller
      */
     public function store(StoreContactRequest $request)
     {
-        sleep(2);
         $validation = $request->validated();
         $validation['user_id'] = auth()->id();
         Contact::create($validation);

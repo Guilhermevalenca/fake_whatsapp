@@ -28,4 +28,8 @@ class Contact extends Model
     {
         return $this->belongsTo(Chat::class);
     }
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
 }

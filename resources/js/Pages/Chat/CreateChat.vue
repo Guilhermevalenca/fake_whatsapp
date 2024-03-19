@@ -27,7 +27,7 @@
 </template>
 
 <script>
-import {Link} from '@inertiajs/vue3';
+import {Link, router} from '@inertiajs/vue3';
 import NewContact from "@/Components/Contact/NewContact.vue";
 import RenderContact from "@/Components/Contact/RenderContact.vue";
 
@@ -37,12 +37,23 @@ export default {
     data() {
         return {
             show: {
-                newContact: false
-            }
+                newContact: false,
+            },
         }
     },
     props: {
         contacts: Object,
+    },
+    created() {
+        this.$Echo.channel('contacts' + this.$page.props.auth.user.id)
+            .listen('UpdatedContactsEvent', (data) => {
+                this.contacts.map(contact => {
+                    if(contact.id === data.contact_id) {
+                        contact.chat_id = data.chat_id;
+                    }
+                    return contact;
+                })
+            })
     },
 }
 </script>

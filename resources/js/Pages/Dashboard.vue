@@ -2,7 +2,7 @@
     <DefaultLayout title="Dashboard">
         <v-container>
             <v-card>
-                <RenderChat v-for="contact in contacts" :key="contact.id" :contact="contact" />
+                <RenderChat v-for="contact in contacts.data" :key="contact.id" :contact="contact" />
             </v-card>
         </v-container>
         <Link :href="route('chat_create')" >
@@ -21,7 +21,7 @@ export default {
     name: 'Dashboard',
     components: {RenderChat, Link},
     props: {
-        contacts: Object
+        contacts: Object,
     },
     mounted() {
         console.log(this.contacts);

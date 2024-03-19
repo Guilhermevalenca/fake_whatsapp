@@ -27,7 +27,7 @@
                 ></v-btn>
             </template>
             <v-container>
-                <RenderMessages v-for="message in reverseOrientationMessageData" :key="message.id" :message="message" :chat="chat.id" />
+                <RenderMessages v-for="message in reverseOrientationMessageData" :key="message.id" :message="message" />
             </v-container>
         </v-infinite-scroll>
         <v-footer class="position-fixed top-[36rem] w-full ma-0">
@@ -51,7 +51,7 @@ export default {
     data() {
         return {
             reverseOrientationMessageData: this.messages.data.reverse(),
-            current_page: this.messages.current_page
+            current_page: 1
         }
     },
     methods: {
@@ -61,14 +61,13 @@ export default {
         getMoreMessages({done}) {
             done('loading');
             if(this.current_page < this.messages.last_page) {
-                this.current_page += 1
+                this.current_page += 1;
                 axios.get(route('messages_show', {chat: this.chat.id}), {
                     params: {
                         page: this.current_page
                     }
                 })
                     .then(response => {
-                        console.log(response.data);
                         const data = response.data.data.reverse()
                         this.reverseOrientationMessageData.unshift(...data);
                         if(this.current_page === this.messages.last_page) {
@@ -86,14 +85,14 @@ export default {
             }
         }
     },
-    watch: {
-        "messages.data": {
-            handler($new) {
-                let merge = [...$new, ...this.reverseOrientationMessageData];
-                this.reverseOrientationMessageData = merge.sort( (a,b) => a.id - b.id);
-            },
-            deep: true
-        }
+    created() {
+        this.$Echo.channel('Messages_' + this.chat.id)
+            .listen('SendMessageEvent', (data) => {
+                const findId = this.reverseOrientationMessageData.find(message => message.id === data.message.id);
+                if(!findId) {
+                    this.reverseOrientationMessageData.push(data.message);
+                }
+            });
     },
 }
 </script>

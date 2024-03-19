@@ -35,12 +35,12 @@ class MessageController extends Controller
         $validation = $request->validated();
         $validation['chat_id'] = $chat->id;
         $validation['user_id'] = auth()->id();
-        Message::create($validation);
-        $contact = Contact::where('chat_id', '=', $chat->id)
-            ->where('user_id', '!=', auth()->id())
-            ->select('user_id')
-            ->first();
-        event(new SendMessageEvent($chat->id, $contact->user_id));
+        $message = Message::create($validation);
+//        $contact = Contact::where('chat_id', '=', $chat->id)
+//            ->where('user_id', '!=', auth()->id())
+//            ->select('user_id')
+//            ->first();
+        event(new SendMessageEvent($chat->id, $message));
         return back();
     }
 
@@ -51,7 +51,7 @@ class MessageController extends Controller
     {
         $messages = $chat->messages()
             ->orderByDesc('id')
-            ->paginate(5);
+            ->paginate(30);
         return response($messages, 200);
     }
 

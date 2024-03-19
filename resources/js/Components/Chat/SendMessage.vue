@@ -22,15 +22,16 @@ export default {
                 content: '',
                 type: 'text',
             }),
+            chat_id: this.chat
         }
     },
     methods: {
         submit() {
-            this.form.post(route('messages_store', {chat: this.chat}), {
+            this.form.post(route('messages_store', {chat: this.chat_id}), {
                 onSuccess: () => this.form.reset(),
                 onError: e => console.log(e)
             })
-        }
+        },
     }
 }
 </script>

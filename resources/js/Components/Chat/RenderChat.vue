@@ -21,12 +21,14 @@ export default {
     computed: {
         message() {
             const currentMessage = this.contact.chat.current_message;
-            if(currentMessage.type === 'text') {
-                const prefix = currentMessage.user_id === this.$page.props.auth.user.id ? 'Voce' : this.contact.name;
-                return prefix + ': ' + currentMessage.content;
-            }else {
-                return 'Arquivo';
-            }
+            if(currentMessage) {
+                if(currentMessage.type === 'text') {
+                    const prefix = currentMessage.user_id === this.$page.props.auth.user.id ? 'Voce' : this.contact.name;
+                    return prefix + ': ' + currentMessage.content;
+                }else {
+                    return 'Arquivo';
+                }
+            } return '';
         }
     }
 }

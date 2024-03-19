@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Events\NewChat;
+use App\Events\UpdatedContactsEvent;
 use App\Http\Requests\StoreChatRequest;
 use App\Http\Requests\UpdateChatRequest;
 use App\Models\Chat;
@@ -58,22 +58,15 @@ class ChatController extends Controller
                 $heHasMyContact->update([
                     'chat_id' => $chat->id
                 ]);
+                event(new UpdatedContactsEvent($data_contact->id, $data_heHasMyContact->id, $chat->id));
             }
         } else {
             $chat = Chat::create();
             $contact->update([
                 'chat_id' => $chat->id
             ]);
-            Contact::create([
-                'name' => auth()->user()->phone,
-                'user_id' => $data_contact->id,
-                'phone' => auth()->user()->phone,
-                'chat_id' => $chat->id
-            ]);
         }
-        return response([
-            'chat' => $chat,
-        ], 200);
+        return to_route('chat_show', ['chat' => $chat]);
     }
 
     /**
@@ -83,7 +76,7 @@ class ChatController extends Controller
     {
         $messages = $chat->messages()
             ->orderByDesc('id')
-            ->paginate(5);
+            ->paginate(30);
         $contact = Contact::where('chat_id', '=' , $chat->id)
             ->where('user_id', '=', auth()->id())
             ->first()

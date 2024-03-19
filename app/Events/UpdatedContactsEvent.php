@@ -2,7 +2,7 @@
 
 namespace App\Events;
 
-use App\Models\Message;
+use App\Models\User;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PresenceChannel;
@@ -11,19 +11,20 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class SendMessageEvent implements ShouldBroadcast
+class UpdatedContactsEvent implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
-    private int $chat_id;
-    public Message $message;
-
+    private int $user_id;
+    public int $contact_id;
+    public int $chat_id;
     /**
      * Create a new event instance.
      */
-    public function __construct(int $chat_id, Message $message)
+    public function __construct(int $user_id, int $contact_id, int $chat_id)
     {
+        $this->user_id = $user_id;
+        $this->contact_id = $contact_id;
         $this->chat_id = $chat_id;
-        $this->message = $message;
     }
 
     /**
@@ -33,6 +34,6 @@ class SendMessageEvent implements ShouldBroadcast
      */
     public function broadcastOn(): array
     {
-        return ['Messages_' . $this->chat_id];
+        return ['contacts' . $this->user_id];
     }
 }
