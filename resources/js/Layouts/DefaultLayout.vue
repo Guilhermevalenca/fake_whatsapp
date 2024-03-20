@@ -58,22 +58,39 @@
             </v-app-bar>
         </header>
         <v-main class="mr-2 ml-2">
-            <section class="flex">
-                <NavLink :href="route('community')" :active="route().current('community')">
-                    <v-icon icon="mdi-account-group" />
-                </NavLink>
-                <NavLink :href="route('contact_index')" :active="route().current('contact_index')">
-                    <v-card-subtitle>Conversas</v-card-subtitle>
-                </NavLink>
-                <NavLink :href="route('status')" :active="route().current('status')">
-                    <v-card-subtitle>Atualizações</v-card-subtitle>
-                </NavLink>
-                <NavLink :href="route('calls')" :active="route().current('calls')">
-                    <v-card-subtitle>Ligações</v-card-subtitle>
-                </NavLink>
+            <section>
+                <v-tabs v-model="current_page">
+                    <Link :href="route('community_index')">
+                        <v-tab value="community_index">
+                            <v-icon icon="mdi-account-group" />
+                        </v-tab>
+                    </Link>
+                    <Link :href="route('contact_index')">
+                        <v-tab v-if="route().current('chat_create')" value="chat_create">
+                            <v-card-subtitle>Conversas</v-card-subtitle>
+                        </v-tab>
+                        <v-tab v-else value="contact_index">
+                            <v-card-subtitle>Conversas</v-card-subtitle>
+                        </v-tab>
+                    </Link>
+                    <Link :href="route('status_index')">
+                        <v-tab value="status_index">
+                            <v-card-subtitle>Atualizações</v-card-subtitle>
+                        </v-tab>
+                    </Link>
+                    <Link :href="route('calls_index')">
+                        <v-tab value="calls_index">
+                            <v-card-subtitle>Ligações</v-card-subtitle>
+                        </v-tab>
+                    </Link>
+                </v-tabs>
             </section>
             <section>
-                <slot />
+                <v-window v-model="current_page">
+                    <v-window-item :value="route().current()">
+                        <slot />
+                    </v-window-item>
+                </v-window>
             </section>
         </v-main>
     </v-app>
@@ -91,18 +108,20 @@ export default {
         title: {
             type: String,
             required: true,
-        }
+        },
+
     },
     data() {
         return {
-            theme: useTheme()
+            theme: useTheme(),
+            current_page: route().current()
         }
     },
     methods: {
         alterTheme() {
             this.theme.global.name = this.theme.global.current.dark ? 'light' : 'dark';
             localStorage.setItem('theme', this.theme.global.name);
-        }
+        },
     },
 }
 </script>

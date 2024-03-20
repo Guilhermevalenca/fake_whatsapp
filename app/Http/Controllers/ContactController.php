@@ -16,9 +16,13 @@ class ContactController extends Controller
      */
     public function index()
     {
+
         $contacts = Contact::whereNotNull('chat_id')
             ->where('user_id', '=', auth()->id())
-            ->orWhere('phone', auth()->user()->phone)
+            ->orWhere('phone', function ($query) {
+                $query->select('phone')
+                    ->where('phone', '=', auth()->user()->phone);
+            })
             ->with(['chat' => function ($query) {
                 $query->with('current_message');
             }])

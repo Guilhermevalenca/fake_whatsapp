@@ -98,6 +98,7 @@ class ChatController extends Controller
                 ->user()
                 ->select('id', 'email', 'phone', 'status', 'profile')
                 ->first();
+            $contact['not_saved_contact'] = true;
         }
         return Inertia::render('Chat/ChatOneOnOne', [
             'chat' => $chat,

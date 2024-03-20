@@ -26,8 +26,5 @@ export default {
     props: {
         contacts: Object,
     },
-    mounted() {
-        console.log(this.contacts);
-    }
 }
 </script>

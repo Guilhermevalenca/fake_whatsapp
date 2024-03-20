@@ -39,6 +39,9 @@ class RouteServiceProvider extends ServiceProvider
                     base_path('routes/ContactRoutes.php'),
                     base_path('routes/chatRoutes.php'),
                     base_path('routes/MessageRoutes.php'),
+                    base_path('routes/callsRoutes.php'),
+                    base_path('routes/communityRoutes.php'),
+                    base_path('routes/statusRoutes.php'),
                 ]);
         });
     }

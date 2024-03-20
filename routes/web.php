@@ -40,14 +40,3 @@ Route::middleware('auth')->group(function () {
 
 require __DIR__.'/auth.php';
 
-Route::get('status', function() {
-    return Inertia::render('Dashboard');
-})->name('status');
-
-Route::get('calls', function() {
-    return Inertia::render('Dashboard');
-})->name('calls');
-
-Route::get('community', function() {
-    return Inertia::render('Dashboard');
-})->name('community');

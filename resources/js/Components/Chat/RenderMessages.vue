@@ -5,6 +5,7 @@
             <v-icon
                 v-if="message.user_id === $page.props.auth.user.id"
                 :icon="message.is_send ? 'mdi-check-all' : 'mdi-check'"
+                @click="$emit('explaining_icons')"
             />
         </div>
     </div>
@@ -16,6 +17,7 @@ export default {
     props: {
         message: Object,
     },
+    emits: ['explaining_icons']
 }
 </script>
 

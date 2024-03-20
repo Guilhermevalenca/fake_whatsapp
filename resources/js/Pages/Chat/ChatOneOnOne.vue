@@ -10,6 +10,7 @@
                 <v-btn icon="mdi-dots-vertical" />
             </div>
         </v-app-bar>
+
         <div class="ma-8" />
         <v-infinite-scroll
             side="start"
@@ -31,12 +32,25 @@
                     v-for="message in reverseOrientationMessageData"
                     :key="message.id"
                     :message="message"
+                    @explaining_icons="showExplainingIcons = true"
                 />
             </v-container>
         </v-infinite-scroll>
         <v-footer class="position-fixed top-[36rem] w-full ma-0">
             <SendMessage :chat="chat" />
         </v-footer>
+        <v-dialog v-model="showExplainingIcons">
+            <v-card>
+                <v-container class="flex justify-between">
+                    <div class="p-1">Mensagem enviada</div>
+                    <v-icon icon="mdi-check" />
+                </v-container>
+                <v-container class="flex justify-between">
+                    <div class="p-1">Mensagem lida</div>
+                    <v-icon icon="mdi-check-all" />
+                </v-container>
+            </v-card>
+        </v-dialog>
     </v-app>
 </template>
 
@@ -55,7 +69,8 @@ export default {
     data() {
         return {
             reverseOrientationMessageData: this.messages.data.reverse(),
-            current_page: 1
+            current_page: 1,
+            showExplainingIcons: false
         }
     },
     methods: {
