@@ -88,8 +88,7 @@ class ChatController extends Controller
         $contact = Contact::where('chat_id', '=' , $chat->id)
             ->where('user_id', '=', auth()->id());
         if($contact->exists()) {
-            $contact = $contact->first()
-                ->data_contact()
+            $contact = $contact->select('id', 'name', 'phone', 'contact_blocked')
                 ->first();
         } else {
             $contact = Contact::where('chat_id', '=', $chat->id)

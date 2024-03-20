@@ -5,7 +5,10 @@
                 v-for="contact in contacts.data"
                 :key="contact.id"
             >
-                <RenderChat :contact="contact" />
+                <RenderChat
+                    v-if="!contact.exist_my_contact || contact.exist_my_contact === 'my_contact'"
+                    :contact="contact"
+                />
             </v-card>
         </v-container>
         <Link :href="route('chat_create')" >
@@ -26,5 +29,8 @@ export default {
     props: {
         contacts: Object,
     },
+    mounted() {
+        console.log(this.contacts);
+    }
 }
 </script>

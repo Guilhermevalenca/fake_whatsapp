@@ -4,6 +4,7 @@
         <v-app-bar class="text-center">
             <v-btn icon="mdi-arrow-left" @click="backPage()" />
             <div>{{contact.name ? contact.name : contact.phone}}</div>
+            <v-spacer />
             <div class="d-flex justify-end">
                 <v-btn icon="mdi-video" />
                 <v-btn icon="mdi-phone" />
@@ -120,6 +121,7 @@ export default {
                     return message;
                 });
             });
+        console.log(this.contact);
     },
 }
 </script>
