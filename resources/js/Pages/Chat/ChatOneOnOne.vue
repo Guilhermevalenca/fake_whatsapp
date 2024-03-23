@@ -112,14 +112,17 @@ export default {
                 if(!findId) {
                     this.reverseOrientationMessageData.push(data.message);
                 }
+                this.$Echo.trigger('UpdateCheckMessageEvent', {chat_id: this.chat.id});
             });
         echoChannel.listen('UpdateCheckMessageEvent', (data) => {
-            this.reverseOrientationMessageData.map(message => {
-                    if(data.messages.find(value => value.id === message.id)) {
-                        message.is_send = 1;
-                    }
-                    return message;
-                });
+                if(data.messages) {
+                    this.reverseOrientationMessageData.map(message => {
+                        if(data.messages.find(value => value.id === message.id)) {
+                            message.is_send = 1;
+                        }
+                        return message;
+                    });
+                }
             });
         console.log(this.contact);
     },

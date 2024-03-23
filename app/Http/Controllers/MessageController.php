@@ -36,11 +36,11 @@ class MessageController extends Controller
         $validation['chat_id'] = $chat->id;
         $validation['user_id'] = auth()->id();
         $message = Message::create($validation);
+        event(new SendMessageEvent($chat->id, $message));
 //        $contact = Contact::where('chat_id', '=', $chat->id)
 //            ->where('user_id', '!=', auth()->id())
 //            ->select('user_id')
 //            ->first();
-        event(new SendMessageEvent($chat->id, $message));
         return back();
     }
 
