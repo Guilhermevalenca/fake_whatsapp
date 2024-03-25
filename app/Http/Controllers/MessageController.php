@@ -3,10 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Events\SendMessageEvent;
+use App\Events\UpdateCheckMessageEvent;
 use App\Http\Requests\StoreMessageRequest;
 use App\Http\Requests\UpdateMessageRequest;
 use App\Models\Chat;
-use App\Models\Contact;
 use App\Models\Message;
 
 class MessageController extends Controller
@@ -77,5 +77,16 @@ class MessageController extends Controller
     public function destroy(Message $message)
     {
         //
+    }
+
+    public function updated_isSend_messages(Chat $chat)
+    {
+        $messagesToEvent = Message::where('chat_id', '=', $chat->id)
+            ->where('user_id', '!=', auth()->id());
+        $messagesToEvent->update([
+            'is_send' => 1
+        ]);
+        event(new UpdateCheckMessageEvent($chat->id, $messagesToEvent->get()));
+        return back();
     }
 }

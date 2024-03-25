@@ -74,14 +74,9 @@ class ChatController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Chat $chat)
+    public function show(Chat $chat, MessageController $messageController)
     {
-        $messagesToEvent = Message::where('chat_id', '=', $chat->id)
-            ->where('user_id', '!=', auth()->id());
-        $messagesToEvent->update([
-                'is_send' => 1
-            ]);
-        event(new UpdateCheckMessageEvent($chat->id, $messagesToEvent->get()));
+        $messageController->updated_isSend_messages($chat);
         $messages = $chat->messages()
             ->orderByDesc('id')
             ->paginate(30);
@@ -105,7 +100,6 @@ class ChatController extends Controller
             'contact' => $contact
         ]);
     }
-
     /**
      * Show the form for editing the specified resource.
      */

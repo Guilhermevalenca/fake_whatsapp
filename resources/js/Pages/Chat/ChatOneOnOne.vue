@@ -1,17 +1,8 @@
 <template>
     <v-app>
         <Head :title="contact.name ? contact.name : 'Desconhecido'" />
-        <v-app-bar class="text-center">
-            <v-btn icon="mdi-arrow-left" @click="backPage()" />
-            <div>{{contact.name ? contact.name : contact.phone}}</div>
-            <v-spacer />
-            <div class="d-flex justify-end">
-                <v-btn icon="mdi-video" />
-                <v-btn icon="mdi-phone" />
-                <v-btn icon="mdi-dots-vertical" />
-            </div>
-        </v-app-bar>
-
+        <AppBarChat v-show="!showOptionsMessage" :contact="contact" @backPage="backPage()" />
+        <AppBarOptionsChat v-show="showOptionsMessage" />
         <div class="ma-8" />
         <v-infinite-scroll
             side="start"
@@ -34,6 +25,7 @@
                     :key="message.id"
                     :message="message"
                     @explaining_icons="showExplainingIcons = true"
+                    @update:longPress="value => showOptionsMessage = value"
                 />
             </v-container>
         </v-infinite-scroll>
@@ -59,13 +51,16 @@
 import {Head, router} from "@inertiajs/vue3";
 import RenderMessages from "@/Components/Chat/RenderMessages.vue";
 import SendMessage from "@/Components/Chat/SendMessage.vue";
+import AppBarChat from "@/Components/Chat/AppBarChat.vue";
+import AppBarOptionsChat from "@/Components/Chat/AppBarOptionsChat.vue";
 export default {
     name: "ChatOneOnOne",
-    components: {SendMessage, RenderMessages, Head},
+    components: {AppBarOptionsChat, AppBarChat, SendMessage, RenderMessages, Head},
     props: {
         chat: Object,
         messages: Object,
         contact: Object,
+        showOptionsMessage: false
     },
     data() {
         return {
@@ -105,14 +100,14 @@ export default {
             }
         }
     },
-    created() {
+    mounted() {
         const echoChannel = this.$Echo.channel('Messages_' + this.chat.id);
         echoChannel.listen('SendMessageEvent', (data) => {
                 const findId = this.reverseOrientationMessageData.find(message => message.id === data.message.id);
                 if(!findId) {
                     this.reverseOrientationMessageData.push(data.message);
                 }
-                this.$Echo.trigger('UpdateCheckMessageEvent', {chat_id: this.chat.id});
+                axios.get(route('messages_updated_send', {chat: this.chat}));
             });
         echoChannel.listen('UpdateCheckMessageEvent', (data) => {
                 if(data.messages) {
@@ -126,6 +121,9 @@ export default {
             });
         console.log(this.contact);
     },
+    unmounted() {
+        this.$Echo.leaveChannel('Messages_' + this.chat.id);
+    }
 }
 </script>
 

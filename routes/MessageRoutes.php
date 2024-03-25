@@ -13,4 +13,6 @@ Route::prefix('messages')
         Route::get('{chat}', 'show')
             ->name('messages_show');
 
+        Route::get('updated/is_send/{chat}', 'updated_isSend_messages')
+            ->name('messages_updated_send');
     });

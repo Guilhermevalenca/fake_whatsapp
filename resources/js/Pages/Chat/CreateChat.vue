@@ -44,7 +44,7 @@ export default {
     props: {
         contacts: Object,
     },
-    created() {
+    mounted() {
         this.$Echo.channel('contacts' + this.$page.props.auth.user.id)
             .listen('UpdatedContactsEvent', (data) => {
                 this.contacts.map(contact => {

@@ -45,7 +45,7 @@ export default {
             } return '';
         }
     },
-    created() {
+    mounted() {
         this.$Echo.channel('Messages_' + this.contact.chat.id)
             .listen('SendMessageEvent', data => {
                 this.contact.chat.current_message = data.message;
