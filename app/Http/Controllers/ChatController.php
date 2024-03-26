@@ -79,6 +79,14 @@ class ChatController extends Controller
         $messageController->updated_isSend_messages($chat);
         $messages = $chat->messages()
             ->orderByDesc('id')
+            ->where(function ($query) {
+                $query->where('user_id', '=', auth()->id())
+                    ->where('visible_to_me', '=', 1);
+            })
+            ->orWhere(function ($query) {
+                $query->where('user_id', '!=', auth()->id())
+                    ->where('visible_to_you', '=', 1);
+            })
             ->paginate(30);
         $contact = Contact::where('chat_id', '=' , $chat->id)
             ->where('user_id', '=', auth()->id());

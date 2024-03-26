@@ -1,8 +1,13 @@
 <template>
     <v-app>
         <Head :title="contact.name ? contact.name : 'Desconhecido'" />
-        <AppBarChat v-show="!showOptionsMessage" :contact="contact" @backPage="backPage()" />
-        <AppBarOptionsChat v-show="showOptionsMessage" />
+        <AppBarOptionsChat
+            v-if="showOptionsMessage"
+            @close="showOptionsMessage = false"
+            :quant_select="quantSelect"
+            :messages_selected="messagesSelected"
+        />
+        <AppBarChat v-else :contact="contact" @backPage="backPage()" />
         <div class="ma-8" />
         <v-infinite-scroll
             side="start"
@@ -17,15 +22,17 @@
                     size="small"
                     variant="text"
                     v-bind="props"
-                ></v-btn>
+                />
             </template>
             <v-container>
                 <RenderMessages
-                    v-for="message in reverseOrientationMessageData"
+                    v-for="(message, index) in reverseOrientationMessageData"
                     :key="message.id"
                     :message="message"
                     @explaining_icons="showExplainingIcons = true"
-                    @update:longPress="value => showOptionsMessage = value"
+                    @update:longPress="value => longPress(value, index)"
+                    :class="optionsMessage[index] ? 'bg-sky-900' : ''"
+                    :pressed="!!optionsMessage.find(value => value === true)"
                 />
             </v-container>
         </v-infinite-scroll>
@@ -60,13 +67,13 @@ export default {
         chat: Object,
         messages: Object,
         contact: Object,
-        showOptionsMessage: false
     },
     data() {
         return {
             reverseOrientationMessageData: this.messages.data.reverse(),
             current_page: 1,
-            showExplainingIcons: false
+            showExplainingIcons: false,
+            optionsMessage: [],
         }
     },
     methods: {
@@ -98,9 +105,13 @@ export default {
             } else {
                 done('empty');
             }
+        },
+        longPress(value, index) {
+            this.optionsMessage[index] = value;
         }
     },
     mounted() {
+        console.log(this.reverseOrientationMessageData)
         const echoChannel = this.$Echo.channel('Messages_' + this.chat.id);
         echoChannel.listen('SendMessageEvent', (data) => {
                 const findId = this.reverseOrientationMessageData.find(message => message.id === data.message.id);
@@ -119,10 +130,42 @@ export default {
                     });
                 }
             });
-        console.log(this.contact);
+        echoChannel.listen('DeletedMessageEvent', data => {
+            console.log(data);
+            this.reverseOrientationMessageData = this.reverseOrientationMessageData.map(value => {
+                if(data.message.id === value.id) {
+                    return null;
+                }
+                return value;
+            });
+        });
     },
     unmounted() {
         this.$Echo.leaveChannel('Messages_' + this.chat.id);
+    },
+    computed: {
+        showOptionsMessage: {
+            get() {
+                if(this.optionsMessage.length === 0) {
+                    return false;
+                }
+                return this.optionsMessage.find(value => value === true);
+            },
+            set() {
+                this.optionsMessage = this.optionsMessage.map(value => false);
+            }
+        },
+        quantSelect() {
+            const quant = this.optionsMessage.filter(value => value === true);
+            return quant.length;
+        },
+        messagesSelected() {
+            return this.optionsMessage.map((value, index) => {
+                if(value !== false) {
+                    return this.reverseOrientationMessageData[index];
+                }
+            });
+        }
     }
 }
 </script>

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\DeletedMessageEvent;
 use App\Events\SendMessageEvent;
 use App\Events\UpdateCheckMessageEvent;
 use App\Http\Requests\StoreMessageRequest;
@@ -76,7 +77,20 @@ class MessageController extends Controller
      */
     public function destroy(Message $message)
     {
-        //
+         if($message->user_id === auth()->id()){
+            $message->update([
+                'visible_to_me' => false
+            ]);
+        } else {
+            $message->update([
+                'visible_to_you' => false
+            ]);
+        }
+        if(!$message->visible_to_me && !$message->visible_to_you) {
+            $message->delete();
+        }
+        event(new DeletedMessageEvent($message->chat_id, $message));
+        return response(['success' => true], 200);
     }
 
     public function updated_isSend_messages(Chat $chat)

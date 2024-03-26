@@ -1,10 +1,8 @@
 <template>
-    <div :class="['flex', message.user_id === $page.props.auth.user.id ? 'justify-end' : 'justify-start']">
-        <div class="d-flex"
-             @pointerdown="startLongPress()"
-             @click="stopLongPress()"
-        >
-            <div class="pr-1">{{message.content}}</div>
+    <div :class="['flex', message.user_id === $page.props.auth.user.id ? 'justify-end' : 'justify-start']" @pointerdown="startLongPress()"
+         @click="stopLongPress()">
+        <div class="d-flex">
+            <div class="pr-1 select-none">{{message.content}}</div>
 
             <v-icon
                 v-if="message.user_id === $page.props.auth.user.id"
@@ -20,24 +18,41 @@ export default {
     name: "RenderMessages",
     data() {
         return {
-            isLongPress: false
+            isLongPress: false,
         }
     },
     props: {
         message: Object,
+        pressed: Boolean
     },
     methods: {
         startLongPress() {
-            this.isLongPress = true;
-            setTimeout(() => {
-                this.$emit('update:longPress', this.isLongPress);
-            }, 700);
+            if(!this.pressed) {
+                setTimeout(() => {
+                    this.isLongPress = true;
+                }, 700);
+            }
         },
         stopLongPress() {
-            this.isLongPress = false;
+            if(!this.pressed) {
+                this.isLongPress = false;
+            } else {
+                this.isLongPress = !this.isLongPress;
+            }
         }
     },
     emits: ['explaining_icons', 'update:longPress'],
+    mounted() {
+        this.$emit('update:longPress', this.isLongPress);
+    },
+    watch: {
+        isLongPress: {
+            handler($new) {
+                this.$emit('update:longPress', $new);
+            },
+            deep: true
+        }
+    }
 }
 </script>
 
